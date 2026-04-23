@@ -1,0 +1,60 @@
+# Vanguard Marketing Intelligence — Repository Exclusions
+
+# Python Build & Artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Project Specific Data (Large Files)
+data/*.parquet
+db/*.duckdb
+db/*.wal
+db/*.tmp
+logs/*.log
+
+# IDE & OS Specific
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Streamlit Local Config
+.streamlit/config.toml
+.streamlit/secrets.toml
