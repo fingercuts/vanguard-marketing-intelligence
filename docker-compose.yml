@@ -1,0 +1,71 @@
+version: '3.8'
+
+x-common:
+  &common
+  env_file:
+    - .env
+  volumes:
+    - ./data:/app/data
+    - ./logs:/app/logs
+
+services:
+  dashboard:
+    <<: *common
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: marketing_dashboard
+    ports:
+      - "${STREAMLIT_PORT:-8501}:8501"
+    volumes:
+      - ./dashboard:/app/dashboard
+    command: streamlit run dashboard/Home.py --server.port=8501 --server.address=0.0.0.0
+
+  # -- AIRFLOW SETUP --
+  postgres:
+    image: postgres:13
+    container_name: marketing_airflow_db
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  
+  airflow-webserver:
+    image: apache/airflow:2.8.1
+    container_name: marketing_airflow_web
+    depends_on:
+      - postgres
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/app/scripts
+      - ./data:/app/data
+      - ./.env:/opt/airflow/.env
+    ports:
+      - "8080:8080"
+    command: webserver
+  
+  airflow-scheduler:
+    image: apache/airflow:2.8.1
+    container_name: marketing_airflow_scheduler
+    depends_on:
+      - postgres
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/app/scripts
+      - ./data:/app/data
+      - ./.env:/opt/airflow/.env
+    command: scheduler
+
+volumes:
+  pgdata:
