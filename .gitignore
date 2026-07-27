@@ -40,6 +40,10 @@ docs/Technical_Interview_Guide.md
 .DS_Store
 Thumbs.db
 
+# Tool caches & accidental uploads
+.agnes/
+upload_*
+
 # ---------------------------------------
 # Proprietary / Secret Generation Scripts
 # ---------------------------------------
