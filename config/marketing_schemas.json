@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Marketing Intelligence Channel Schema",
+  "description": "Validation constraints and metadata for acquisition channels and UTM campaigns.",
+  "channels": {
+    "Google Ads": {
+      "channel_name": "Google Ads",
+      "allowed_objectives": ["Awareness", "Traffic", "Conversions", "Lead Gen"],
+      "ctr_bounds": {
+        "min": 0.01,
+        "max": 0.15
+      },
+      "cpc_bounds": {
+        "min": 0.10,
+        "max": 5.00
+      }
+    },
+    "Facebook Ads": {
+      "channel_name": "Facebook Ads",
+      "allowed_objectives": ["Awareness", "Traffic", "Conversions", "App Install", "Lead Gen"],
+      "ctr_bounds": {
+        "min": 0.005,
+        "max": 0.12
+      },
+      "cpc_bounds": {
+        "min": 0.05,
+        "max": 4.00
+      }
+    },
+    "TikTok Ads": {
+      "channel_name": "TikTok Ads",
+      "allowed_objectives": ["Awareness", "Traffic", "Conversions", "App Install"],
+      "ctr_bounds": {
+        "min": 0.02,
+        "max": 0.20
+      },
+      "cpc_bounds": {
+        "min": 0.02,
+        "max": 3.00
+      }
+    }
+  },
+  "utm_requirements": {
+    "source_required": true,
+    "medium_required": true,
+    "allowed_mediums": ["cpc", "social", "display", "email", "organic"]
+  }
+}
