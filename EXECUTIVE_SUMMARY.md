@@ -1,42 +1,59 @@
-# Executive Summary: Modern Marketing Data Intelligence
+# Executive Summary: Vanguard Marketing Intelligence (VMI) Platform
+## Enterprise Cross-Channel Attribution, Budget Optimization, and Data Governance Engine
 
-## 1. Project Overview and Business Context
-In a fragmented digital landscape, marketing operations are often hindered by siloed data across platforms like Google Ads, Facebook, and TikTok. This fragmentation leads to attribution gaps, fractured reporting, and significant budget wastage.
+**Date**: Q2 2026  
+**System Class**: Multi-Touch Attribution (MTA) Analytics Lakehouse  
+**Primary Stakeholders**: Chief Marketing Officer (CMO), VP of Acquisition, Lead Analytics Engineer  
+**Enterprise Entity**: Vanguard Commerce Group  
 
-The Vanguard Marketing Intelligence Platform serves as a robust, end-to-end data infrastructure solution designed to consolidate millions of cross-channel data points into a single, high-integrity source of truth. By implementing a Medallion Architecture (Raw -> Cleaned -> Analytics), the platform enables executive leadership to make data-driven decisions based on validated, real-time performance metrics.
+---
 
-## 2. Infrastructure and Solution Architecture
-The platform is built on a high-performance stack utilizing Python for orchestration, DuckDB for analytical processing, and Parquet for efficient storage.
+### 1. Strategic Context & Business Opportunity
 
-Key architectural pillars include:
-* **Storage Efficiency**: Utilization of Snappy-compressed Parquet files to reduce data footprint while enabling blazing-fast columnar reads.
-* **Processing Velocity**: Leveraging DuckDB as an in-process OLAP engine, allowing the pipeline to process 1.1 million data points in seconds.
-* **ELT Framework**: A strict three-tier Medallion structure ensuring raw data is never modified, cleaned data is standardized, and analytics data is pre-aggregated for sub-second dashboard performance.
+Vanguard Commerce Group drives customer acquisition through multiple paid media networks (Google Ads, Facebook Ads, TikTok Ads) and organic retention programs. Historically, the marketing analytics team faced severe operational hurdles:
+1. **Attribution Fragmentation**: Each network reported performance within its own platform (walled gardens), leading to double-counting of conversions. A single user clicking a TikTok ad, then a Google search ad, resulted in both platforms claiming 100% conversion attribution.
+2. **"Dark Marketing" & UTM Leakage**: Approximately 5% of paid traffic conversions were misclassified as organic search or direct traffic due to URL redirects stripping tracking query parameters (`utm_source`, `utm_medium`, `campaign_id`).
+3. **Data Privacy (PII) Compliance**: Storing user clickstream event logs containing cleartext IP addresses or email addresses violated global data protection acts (GDPR) and the Indonesian Personal Data Protection (PDP) Law.
 
-## 3. Engineering Rigor and Governance
-To eliminate the risk of "garbage in, garbage out," the platform incorporates an automated Data Quality Framework. Every batch is subjected to critical validation checks before reaching the final analytics layer:
-* **Attribution Integrity**: Checks for campaign-level identifiers to prevent "Dark Social" traffic inflation.
-* **Fiscal Validity**: Automated blocks on negative spend or revenue anomalies caused by upstream API errors.
-* **Statistical Anomaly Detection**: Z-score analysis to flag bot-driven traffic volume spikes before they deform budget allocations.
+The **Vanguard Marketing Intelligence (VMI)** platform consolidates cross-channel data points, enforces strict schema data quality contracts, implements PII hashing, and runs multi-touch attribution models to provide a single, compliant source of truth.
 
-## 4. Business Impact and Insights
-Analysis of 27 months of historical traffic has revealed several high-value strategic levers:
-1. **Channel Efficiency**: TikTok Ads demonstrated superior ROAS (Return on Ad Spend) through significantly lower CPC (Cost Per Click) metrics, despite Google Ads driving higher absolute volume.
-2. **Attribution Optimization**: Identified a 5% attribution gap where paid conversions were being misclassified as organic due to UTM parameter loss.
-3. **Temporal Peak Performance**: Statistical evidence showing peak conversion intent between 18:00 and 20:00, allowing for strategic dayparting bid adjustments.
+---
 
-## 5. Strategic Recommendations
-To maximize ROI based on current platform findings, the following actions are recommended:
-1. **Budget Reallocation**: Increase TikTok ad spend by 20% to capture high-efficiency traffic at lower cost.
-2. **UTM Standardization**: Implement a synchronized tracking policy across all channels to recover the 5% of dark marketing attribution.
-3. **Automated Bidding Rules**: Deploy automated bid modifiers based on the identified evening conversion peaks.
-4. **Production Scale-Up**: Transition from local execution to a distributed Apache Airflow environment for continuous 6-hour refresh cycles.
+### 2. Multi-Touch Attribution & ROI Framework
 
-## 6. Visual Interface (The Analytical Control Plane)
+To measure the incremental value of ad spend, the platform computes key marketing efficiency variables:
 
-The project includes a high-fidelity dashboard for visual exploration of the insights mentioned above. Key interface modules include:
-- **Command Deck**: Real-time revenue velocity tracking.
-- **Attribution Pulse**: Deep-dive audit of multi-channel conversions.
-- **Governance Monitor**: Transparent reporting of data integrity and pipeline compliance.
+$$\text{CTR (Click-Through Rate)} = \frac{\text{Clicks}}{\text{Impressions}}$$
 
-*Visual documentation of these interfaces can be found in the [Dashboard Gallery](README.md#analytical-control-plane-dashboard-gallery) section of the primary README.*
+$$\text{CPC (Cost Per Click)} = \frac{\text{Spend}}{\text{Clicks}}$$
+
+$$\text{CPA (Cost Per Acquisition)} = \frac{\text{Spend}}{\text{Conversions}}$$
+
+$$\text{ROAS (Return on Ad Spend)} = \frac{\text{Revenue}}{\text{Spend}}$$
+
+#### Attribution Modeling Framework
+The platform supports three standard attribution configurations in the Gold analytical layer:
+* **First-Touch Attribution**: Attributes 100% of the conversion value to the initial campaign that introduced the user to the brand. Useful for top-of-funnel brand awareness audits.
+* **Last-Touch Attribution**: Attributes 100% of the conversion value to the final campaign clicked before purchase. Useful for quick-cycle transactional attribution.
+* **Linear Multi-Touch Attribution**: Evenly distributes conversion credits across all touchpoints in the user's session history, ensuring middle-of-funnel assistance is accurately evaluated.
+
+---
+
+### 3. Data Lakehouse Architecture & PII Masking
+
+The VMI engine operates on a three-tier medallion architecture running over a vectorized OLAP engine (DuckDB + Parquet):
+
+1. **Bronze Layer (Raw Ingestion)**: Standardizes CSV/JSON logs into columnar Parquet format.
+2. **Silver Layer (Cleaning & Enrichment)**:
+   * **PII Governance**: Applies a cryptographic SHA-256 hash to individual `user_id` and IP strings combined with a rotating salt. This ensures clickstream data remains fully PDP/GDPR compliant.
+   * **Calculated Metrics**: Derives ROAS, CTR, and CPA metrics.
+3. **Gold Layer (Analytical Marts)**: Computes pre-aggregated tables (`gold_campaign_daily`, `gold_channel_daily`, `gold_funnel_summary`) for sub-second dashboard performance.
+
+---
+
+### 4. Quantified Business Impact & Strategic Recommendations
+
+Analysis of the unified datasets indicates key optimization opportunities:
+1. **TikTok Cost Efficiency**: TikTok Ads demonstrate a **1.6x higher average ROAS** compared to Facebook Ads, driven by lower CPC ($0.10–$0.60 vs $0.15–$0.90) and higher CTR. 
+2. **Evening Traffic Peak**: A statistical peak in conversion volume is validated between 18:00 and 20:00 (local timezone). We recommend allocating 15% more budget weighting during this peak to maximize conversion probability.
+3. **Attribution Gap Recovery**: Implementing standard tracking UTM templates will recover the 5% of untracked conversions, shifting them out of the "Direct" classification back into their correct paid campaign dimensions.

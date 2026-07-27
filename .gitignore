@@ -1,60 +1,53 @@
-# Vanguard Marketing Intelligence — Repository Exclusions
+# ---------------------------------------
+# Data Sources & Databases
+# ---------------------------------------
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
 
-# Python Build & Artifacts
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# Logs & Databases
+*.log
+*.duckdb
+*.duckdb.wal
 
-# Virtual Environments
-.env
-.venv
-env/
+# ---------------------------------------
+# dbt Specific
+# ---------------------------------------
+dbt_project/target/
+dbt_project/dbt_packages/
+dbt_project/logs/
+
+# ---------------------------------------
+# General housekeeping
+# ---------------------------------------
+.venv/
 venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Project Specific Data (Large Files)
-data/*.parquet
-db/*.duckdb
-db/*.wal
-db/*.tmp
-logs/*.log
-
-# IDE & OS Specific
-.vscode/
-.idea/
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
-
-# Testing
+env/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
 .pytest_cache/
 .coverage
 htmlcov/
-nosetests.xml
-coverage.xml
 *.cover
-.hypothesis/
 
-# Streamlit Local Config
-.streamlit/config.toml
-.streamlit/secrets.toml
+# AI & Interview Docs (Excluded from Public Repo)
+docs/AI_TUTOR_CONTEXT.md
+docs/Technical_Interview_Guide.md
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------
+# Proprietary / Secret Generation Scripts
+# ---------------------------------------
+scripts/generate_*.py
+scripts/mock_*.py
+data_generator.py
+
+# Ignore generated datasets and massive files
+*.csv
+*.zip
+*.parquet
